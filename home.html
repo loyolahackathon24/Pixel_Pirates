@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Resume Checker</title>
+    <link rel="stylesheet" href="styles1.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header>
+            <h1 style='font-family:Times New Roman, Times, serif;'>🚀 AI-Powered Resume Checker</h1>
+            <p style='font-family:Times New Roman, Times, serif;'>
+                Take the next step in your career with confidence! Upload your resume, 
+                and let our smart system analyze and match it with the perfect job roles. 
+                Receive instant feedback and actionable tips to optimize your profile.
+            </p>
+            <div class="features-section">
+              <h2>✨ Why Use Our Resume Checker?</h2>
+              <ul>
+                  <li>📊 <b>Smart Keyword Matching</b>: Identify the key skills and phrases missing in your resume.</li>
+                  <li>📌 <b>Tailored Job Suggestions</b>: Discover roles that align with your skills and experiences.</li>
+                  <li>💡 <b>Actionable Insights</b>: Get tips to improve your profile and boost your hiring chances.</li>
+                  <li>⏱ <b>Quick & Reliable</b>: Instant results to keep you ahead in your job search.</li>
+              </ul>
+          </div>
+
+        </header>
+
+        <!-- Main Section -->
+        <main>
+            <div class="upload-section">
+             
+                <form id="resumeForm">
+                    <label for="resumeUpload" class="upload-label">📂 Upload Your Resume (PDF Format)</label>
+                    <input type="file" id="resumeUpload" name="resumeUpload" accept=".pdf">
+                    <button type="submit" class="submit-btn1">Analyze My Resume</button>
+                    <a href="summary.html" class="button-link">Generate Summary</a>
+
+                </form>
+                <p id="errorMessage" class="error-message"></p>
+            </div>
+
+            <div id="resultsContainer"></div>
+        </main>
+       
+
+
+        <!-- Footer Section -->
+        <footer>
+            <p>&copy; 2024 ResumePro. Helping you land your dream job with smarter tools.</p>
+            <p>
+                <a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Define job roles and associated keywords
+        const keywords = {
+            "Data Scientist": ["Python", "Machine Learning", "Data Analysis", "TensorFlow", "NLP"],
+            "Web Developer": ["HTML", "CSS", "JavaScript", "React", "Node.js"],
+            "Software Engineer": ["Java", "C++", "OOP", "Git", "Agile"],
+            "Digital Marketer": ["SEO", "Google Analytics", "Content Marketing", "PPC", "Email Marketing"],
+            "Cloud Engineer": ["AWS", "Azure", "Cloud Computing", "Kubernetes", "Docker"],
+            "Mobile App Developer": ["Android", "iOS", "Java", "Swift", "Kotlin"],
+            "Full Stack Developer": ["React", "Node.js", "MongoDB", "Express", "JavaScript"],
+            "Data Analyst": ["SQL", "Excel", "Data Visualization", "Tableau", "Power BI"],
+            "DevOps Engineer": ["CI/CD", "Linux", "Docker", "Kubernetes", "Terraform"],
+            "UI/UX Designer": ["Figma", "Wireframing", "Prototyping", "Adobe XD", "User Research"],
+            "Game Developer": ["Unity", "C#", "Game Design", "3D Modeling", "Animation"],
+            "Business Analyst": ["Business Strategy", "Requirements Gathering", "Data Analysis", "Stakeholder Management", "JIRA"],
+            "Cybersecurity Analyst": ["Network Security", "Firewalls", "Intrusion Detection", "Encryption", "Penetration Testing"],
+            "Network Engineer": ["Cisco", "Networking", "VPN", "Routing", "Switching"],
+            "HR Manager": ["Recruitment", "Employee Relations", "Performance Management", "HR Policies", "Payroll"],
+            "Product Manager": ["Agile", "Scrum", "Market Research", "Product Lifecycle", "Roadmap"],
+            "Sales Manager": ["Lead Generation", "Sales Strategy", "CRM", "B2B Sales", "Negotiation"],
+            "Marketing Manager": ["Branding", "Campaign Management", "Market Research", "SEO", "Social Media"],
+            "Financial Analyst": ["Financial Modeling", "Excel", "Budgeting", "Forecasting", "Reporting"],
+            "Customer Support Specialist": ["CRM", "Customer Service", "Problem Solving", "Communication", "Product Knowledge"],
+            "Teacher": ["Curriculum Development", "Student Assessment", "Classroom Management", "Lesson Planning", "Educational Technology"],
+            "Nurse": ["Patient Care", "Medical Procedures", "Healthcare", "Nursing", "Clinical Skills"],
+            "Lawyer": ["Legal Research", "Courtroom Representation", "Contracts", "Litigation", "Legal Writing"],
+            "Architect": ["Building Design", "Blueprints", "Construction", "CAD", "Urban Planning"],
+            "Financial Planner": ["Investment Strategy", "Retirement Planning", "Tax Optimization", "Insurance", "Wealth Management"],
+            "Event Planner": ["Event Coordination", "Logistics", "Budgeting", "Vendor Management", "Public Relations"],
+            "Public Relations Specialist": ["Media Relations", "Crisis Communication", "Brand Strategy", "Content Creation", "Press Releases"],
+            "Real Estate Agent": ["Property Sales", "Market Analysis", "Negotiation", "Customer Service", "Real Estate Listings"],
+            "Social Worker": ["Case Management", "Mental Health", "Counseling", "Community Outreach", "Advocacy"],
+            "Chef": ["Culinary Arts", "Kitchen Management", "Menu Planning", "Food Safety", "Catering"]
+        };
+
+        const jobVacancies = {
+    "Data Scientist": [
+        { title: "Junior Data Scientist", company: "TechCorp", location: "San Francisco, CA" },
+        { title: "AI Researcher", company: "AI Solutions", location: "New York, NY" },
+        { title: "Data Analyst", company: "DataVision", location: "Chicago, IL" },
+        { title: "Machine Learning Engineer", company: "InnovateAI", location: "Seattle, WA" },
+        { title: "Python Developer", company: "CodeAI", location: "Boston, MA" }
+    ],
+    "Web Developer": [
+        { title: "Frontend Developer", company: "Webify", location: "Los Angeles, CA" },
+        { title: "React Developer", company: "CodeWorks", location: "Austin, TX" },
+        { title: "Full Stack Developer", company: "DevSphere", location: "San Diego, CA" },
+        { title: "JavaScript Developer", company: "JS ProTech", location: "Denver, CO" },
+        { title: "Backend Developer", company: "CodeBase", location: "Miami, FL" }
+    ],
+    "AI Engineer": [
+        { title: "AI Developer", company: "AI Pioneers", location: "San Jose, CA" },
+        { title: "Deep Learning Engineer", company: "VisionAI", location: "Palo Alto, CA" },
+        { title: "AI Specialist", company: "CleverBotics", location: "Dallas, TX" },
+        { title: "NLP Engineer", company: "LanguageAI", location: "Seattle, WA" }
+    ],
+    "Software Developer": [
+        { title: "Java Developer", company: "TechCore", location: "New York, NY" },
+        { title: "Microservices Engineer", company: "CodeCircle", location: "San Francisco, CA" },
+        { title: "Backend Developer", company: "SystemSoft", location: "Austin, TX" },
+        { title: "Software Engineer", company: "SoftPro", location: "Atlanta, GA" }
+    ],
+    "Digital Marketer": [
+        { title: "SEO Specialist", company: "MarketHub", location: "Seattle, WA" },
+        { title: "Google Ads Manager", company: "AdExperts", location: "San Francisco, CA" },
+        { title: "Social Media Strategist", company: "Trendify", location: "Chicago, IL" },
+        { title: "Content Marketer", company: "CreateHub", location: "Austin, TX" }
+    ],
+    "Cloud Engineer": [
+        { title: "AWS Cloud Engineer", company: "CloudNet", location: "San Jose, CA" },
+        { title: "Azure Specialist", company: "TechSky", location: "New York, NY" },
+        { title: "Cloud Architect", company: "Cloudify", location: "San Francisco, CA" },
+        { title: "DevOps Cloud Engineer", company: "SkyTech", location: "Austin, TX" }
+    ],
+    "Mobile App Developer": [
+        { title: "Android Developer", company: "Appify", location: "Chicago, IL" },
+        { title: "iOS Developer", company: "TechMobile", location: "San Francisco, CA" },
+        { title: "Flutter Developer", company: "MobDev", location: "New York, NY" },
+        { title: "React Native Developer", company: "CodeMotion", location: "Miami, FL" }
+    ],
+    "Full Stack Developer": [
+        { title: "Full Stack Developer", company: "Stackify", location: "Denver, CO" },
+        { title: "MERN Stack Developer", company: "CodeSphere", location: "Los Angeles, CA" },
+        { title: "Node.js Developer", company: "DevCluster", location: "Austin, TX" },
+        { title: "Frontend-Backend Engineer", company: "TechFusion", location: "Chicago, IL" }
+    ],
+    "Data Analyst": [
+        { title: "Data Analyst", company: "Insightful", location: "Boston, MA" },
+        { title: "Business Intelligence Analyst", company: "DataVision", location: "San Francisco, CA" },
+        { title: "Excel Data Specialist", company: "BizAnalytix", location: "Chicago, IL" },
+        { title: "Power BI Developer", company: "VizSoft", location: "Seattle, WA" }
+    ],
+    "DevOps Engineer": [
+        { title: "DevOps Engineer", company: "BuildOps", location: "Austin, TX" },
+        { title: "CI/CD Specialist", company: "CodePipeline", location: "San Francisco, CA" },
+        { title: "Kubernetes Expert", company: "CloudDeploy", location: "Seattle, WA" },
+        { title: "Infrastructure Engineer", company: "InfraCore", location: "New York, NY" }
+    ],
+    "UI/UX Designer": [
+        { title: "UX Designer", company: "Designify", location: "Los Angeles, CA" },
+        { title: "UI/UX Prototyper", company: "PixelCraft", location: "New York, NY" },
+        { title: "Product Designer", company: "UserFlow", location: "Austin, TX" },
+        { title: "Interaction Designer", company: "ExperienceLab", location: "Chicago, IL" }
+    ],
+    "Game Developer": [
+        { title: "Unity Developer", company: "GameCraft", location: "San Diego, CA" },
+        { title: "C# Game Developer", company: "PlaySoft", location: "New York, NY" },
+        { title: "3D Artist", company: "VirtualWorld", location: "San Francisco, CA" },
+        { title: "Gameplay Programmer", company: "DevGaming", location: "Seattle, WA" }
+    ],
+    "Business Analyst": [
+        { title: "Business Analyst", company: "BizTrack", location: "Boston, MA" },
+        { title: "Strategy Consultant", company: "ConsultSphere", location: "Chicago, IL" },
+        { title: "Data Business Analyst", company: "DataEdge", location: "San Francisco, CA" },
+        { title: "Requirements Analyst", company: "SystemScope", location: "New York, NY" }
+    ],
+    "Cybersecurity Analyst": [
+        { title: "Network Security Specialist", company: "SecureNet", location: "Austin, TX" },
+        { title: "Penetration Tester", company: "CyberProtect", location: "San Francisco, CA" },
+        { title: "Encryption Expert", company: "CodeSafe", location: "Chicago, IL" },
+        { title: "Intrusion Analyst", company: "ShieldCore", location: "New York, NY" }
+    ],
+    "Teacher": [
+        { title: "Mathematics Teacher", company: "EduCare", location: "San Diego, CA" },
+        { title: "Science Educator", company: "LearnHub", location: "Austin, TX" },
+        { title: "History Teacher", company: "HistoryRoots", location: "New York, NY" },
+        { title: "English Instructor", company: "BrightAcademy", location: "Chicago, IL" }
+    ],
+    "Social Worker": [
+        { title: "Case Manager", company: "CommunityCare", location: "New York, NY" },
+        { title: "Family Counselor", company: "HelpingHands", location: "Los Angeles, CA" },
+        { title: "Mental Health Advocate", company: "MindCare", location: "Austin, TX" },
+        { title: "Community Outreach Coordinator", company: "BetterLives", location: "Chicago, IL" }
+    ]
+};
+
+        // Function to extract text from PDF
+        function extractTextFromPDF(file, callback) {
+            const fileReader = new FileReader();
+            fileReader.onload = function (e) {
+                const loadingTask = pdfjsLib.getDocument({data: new Uint8Array(e.target.result)});
+                loadingTask.promise.then(function (pdf) {
+                    let fullText = '';
+                    let pageNumber = 1;
+                    const totalPages = pdf.numPages;
+                    const extractPageText = function (pageNum) {
+                        pdf.getPage(pageNum).then(function (page) {
+                            page.getTextContent().then(function (textContent) {
+                                fullText += textContent.items.map(item => item.str).join(' ') + '\n';
+                                if (pageNum < totalPages) {
+                                    extractPageText(pageNum + 1);
+                                } else {
+                                    callback(fullText);
+                                }
+                            });
+                        });
+                    };
+                    extractPageText(pageNumber);
+                });
+            };
+            fileReader.readAsArrayBuffer(file);
+        }
+
+        // Function to analyze resume and match job roles
+        function analyzeResume(resumeText) {
+            let matchedJobs = {};
+            let totalKeywords = 0;
+            let missingKeywords = {};
+
+            // Loop through each job role and count matches
+            for (const [job, jobKeywords] of Object.entries(keywords)) {
+                let jobScore = 0;
+                jobKeywords.forEach(keyword => {
+                    if (resumeText.includes(keyword)) {
+                        jobScore++;
+                    }
+                });
+                if (jobScore > 0) {
+                    matchedJobs[job] = jobScore;
+                }
+
+                // Track missing keywords for improvement
+                missingKeywords[job] = jobKeywords.filter(keyword => !resumeText.includes(keyword));
+                totalKeywords += jobKeywords.length;
+            }
+
+            // Display results
+            displayResults(matchedJobs, missingKeywords, totalKeywords);
+        }
+        function calculateATSScoreForBestJob(bestJobScore, totalKeywordsForBestJob) {
+    const atsScore = (bestJobScore / totalKeywordsForBestJob) * 100;
+    return atsScore.toFixed(2); // Returns ATS score as a percentage with 2 decimal places
+}
+
+// Function to display the analysis results
+function displayResults(matchedJobs, missingKeywords, totalKeywords) {
+    const resultsContainer = document.getElementById('resultsContainer');
+    resultsContainer.innerHTML = '';
+
+    let highestMatch = null;
+    let highestScore = 0;
+
+    // Find the best-matched job and display results
+    for (const [job, score] of Object.entries(matchedJobs)) {
+        if (score > highestScore) {
+            highestScore = score;
+            highestMatch = job;
+        }
+        const missingList = missingKeywords[job].map(keyword => `<li>${keyword}</li>`).join('');
+        resultsContainer.innerHTML += `
+            <div class="job-result">
+                <h3>${job} - Score: ${score}</h3>
+                <ul>${missingList ? '<strong>Missing Keywords:</strong>' + missingList : ''}</ul>
+            </div>
+        `;
+    }
+
+    if (highestMatch) {
+        const totalKeywordsForBestJob = keywords[highestMatch].length;
+        const atsScore = calculateATSScoreForBestJob(highestScore, totalKeywordsForBestJob);
+        resultsContainer.innerHTML += `
+            <div class="ats-score">
+                <h2>🏆 Best Match: ${highestMatch}</h2>
+                <p>Your ATS Score for ${highestMatch}: <strong>${atsScore}%</strong></p>
+            </div>
+        `;
+
+        // Display job vacancies for the best-matched job
+        if (jobVacancies[highestMatch]) {
+            const vacancyList = jobVacancies[highestMatch]
+                .map(vacancy => `
+                    <li>
+                        <strong>${vacancy.title}</strong> at ${vacancy.company}, ${vacancy.location}
+                    </li>
+                `)
+                .join('');
+            resultsContainer.innerHTML += `
+                <div class="job-vacancies">
+                    <h3>📢 Job Vacancies for ${highestMatch}</h3>
+                    <ul>${vacancyList}</ul>
+                </div>
+            `;
+        } else {
+            resultsContainer.innerHTML += `
+                <div class="job-vacancies">
+                    <p>No job vacancies available for ${highestMatch} at the moment.</p>
+                </div>
+            `;
+        }
+    }
+}
+
+// Handle resume file upload
+document.getElementById('resumeForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const resumeFile = document.getElementById('resumeUpload').files[0];
+    if (resumeFile) {
+        extractTextFromPDF(resumeFile, function (text) {
+            analyzeResume(text);
+        });
+    } else {
+        document.getElementById('errorMessage').textContent = 'Please upload a valid PDF resume.';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('resumeForm');
+            const errorMessage = document.getElementById('errorMessage');
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const fileInput = document.getElementById('resume');
+                const file = fileInput.files[0];
+
+                if (!file) {
+                    errorMessage.innerText = 'Please select a file.';
+                    return;
+                }
+
+                if (!file.name.endsWith('.pdf') && !file.name.endsWith('.txt')) {
+                    errorMessage.innerText = 'Please upload a PDF or TXT file.';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const resumeText = e.target.result;
+
+                    // Generate summary and navigate to summary page
+                    const summary = generateSummary(resumeText);
+                    sessionStorage.setItem('resumeSummary', summary);
+
+                    window.location.href = 'summary.html';
+                };
+                reader.readAsText(file);
+            });
+
+            function generateSummary(resumeText) {
+                const lines = resumeText.split('\n');
+                const summary = {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    skills: [],
+                    education: '',
+                    experience: [],
+                };
+
+                lines.forEach(line => {
+                    if (/name/i.test(line)) {
+                        summary.name = line.split(':')[1]?.trim();
+                    } else if (/\b[\w.%+-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}\b/.test(line)) {
+                        summary.email = line.match(/\b[\w.%+-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}\b/)[0];
+                    } else if (/(\+?\d{1,4}[-.\s]?)?\(?\d{1,3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/.test(line)) {
+                        summary.phone = line.match(/(\+?\d{1,4}[-.\s]?)?\(?\d{1,3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/)[0];
+                    } else if (/skills/i.test(line)) {
+                        summary.skills.push(...line.split(':')[1]?.split(',').map(s => s.trim()));
+                    } else if (/education/i.test(line)) {
+                        summary.education = line.split(':')[1]?.trim();
+                    } else if (/experience/i.test(line)) {
+                        summary.experience.push(line);
+                    }
+                });
+
+                return JSON.stringify(summary, null, 2);
+            }
+        });
+
+
+    </script>
+</body>
+</html>

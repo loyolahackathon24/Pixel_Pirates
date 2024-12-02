@@ -1,0 +1,196 @@
+/* General Reset */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    background: linear-gradient(#b0e0e6,#fadadd,#d8bfd8);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.button-link {
+  display: inline-block; /* Makes the element behave like a button */
+  padding: 10px 20px; /* Adds space inside the button */
+  background: linear-gradient(135deg, #7bafbe, #3890a4); /* Button background color */
+  color: white; /* Text color */
+  text-decoration: none; /* Removes the underline */
+  border: none; /* Removes the border */
+  border-radius: 5px; /* Adds rounded corners */
+  font-size: 16px; /* Sets font size */
+  cursor: pointer; /* Changes cursor to a pointer on hover */
+  text-align: center; /* Aligns text inside */
+}
+
+.button-link:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
+}
+
+
+/* Container */
+.container {
+    background-color: #ffffff;
+    width: 90%;
+    max-width: 800px;
+    margin: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+/* Header Section */
+header {
+    background: linear-gradient(135deg, #7bafbe, #40818c);
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+header p {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+/* Main Section */
+main {
+    padding: 20px;
+    text-align: center;
+}
+
+/* Upload Section */
+.upload-section {
+    margin-bottom: 20px;
+}
+
+.upload-section img.illustration {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 20px;
+    border-radius: 10px;
+    display: block;
+}
+
+.upload-label {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+input[type="file"] {
+    width: 90%;
+    padding: 10px;
+    border: 2px dashed #6291b0;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+input[type="file"]:hover {
+    border-color: #0e4188;
+}
+
+.submit-btn1,.submit-btn2{
+    display: inline-block;
+    background: linear-gradient(135deg, #7bafbe, #3890a4);
+    color: white;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-btn1,.submit-btn2:hover {
+    background: linear-gradient(135deg, #17716d, #166895);
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+/* Features Section */
+.features-section {
+    margin-top: 20px;
+}
+
+.features-section h2 {
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.features-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.features-section ul li {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    text-align: left;
+    padding-left: 20px;
+    position: relative;
+}
+
+.features-section ul li::before {
+    content: '✔️';
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1.2rem;
+    color: #4CAF50;
+}
+
+/* How It Works Section */
+.how-it-works-section {
+    margin-top: 20px;
+}
+
+.how-it-works-section h2 {
+    font-size: 1.5rem;
+    color: #4CAF50;
+    margin-bottom: 15px;
+}
+
+.how-it-works-section ol {
+    list-style: decimal;
+    margin: 0;
+    padding-left: 20px;
+    text-align: left;
+}
+
+.how-it-works-section ol li {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    background: #f0f0f0;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+footer a {
+    color: #265784;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

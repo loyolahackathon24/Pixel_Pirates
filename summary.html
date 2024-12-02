@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Summary Extractor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <style>
+        body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    background: linear-gradient(#b0e0e6,#fadadd,#d8bfd8);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        input[type="file"] {
+            display: block;
+            margin-bottom: 20px;
+        }
+        button {
+            background: linear-gradient(135deg, #7bafbe, #3890a4);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+          background: linear-gradient(135deg, #17716d, #166895);
+        }
+        .summary {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resume Summary Extractor</h1>
+        <form id="resumeForm">
+            <label for="resumeFile">Upload Your Resume (PDF):</label>
+            <input type="file" id="resumeFile" accept=".pdf">
+            <button type="submit">Extract Summary</button>
+        </form>
+        <div id="output" class="summary"></div>
+        <p id="error" class="error"></p>
+    </div>
+
+    <script>
+        document.getElementById("resumeForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const fileInput = document.getElementById("resumeFile");
+            const file = fileInput.files[0];
+            const output = document.getElementById("output");
+            const error = document.getElementById("error");
+
+            // Clear previous messages
+            output.innerHTML = "";
+            error.textContent = "";
+
+            if (!file) {
+                error.textContent = "Please upload a file.";
+                return;
+            }
+
+            if (file.type !== "application/pdf") {
+                error.textContent = "Only PDF files are supported.";
+                return;
+            }
+
+            extractResumeText(file, function(text) {
+                const summary = extractSummary(text);
+                output.innerHTML = `<h3>Resume Summary:</h3><p>${summary}</p>`;
+            });
+        });
+
+        function extractResumeText(file, callback) {
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const loadingTask = pdfjsLib.getDocument({ data: event.target.result });
+
+                loadingTask.promise.then(function(pdf) {
+                    let fullText = "";
+                    let loadedPages = 0;
+
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        pdf.getPage(i).then(function(page) {
+                            page.getTextContent().then(function(textContent) {
+                                fullText += textContent.items.map(item => item.str).join(" ");
+                                loadedPages++;
+                                if (loadedPages === pdf.numPages) {
+                                    callback(fullText);
+                                }
+                            });
+                        });
+                    }
+                });
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function extractSummary(text) {
+            const summaryRegex = /summary|objective|profile/i;
+            const sentences = text.split(/\.\s+/);
+            for (const sentence of sentences) {
+                if (summaryRegex.test(sentence)) {
+                    return sentence.trim();
+                }
+            }
+            return "No summary found in the resume.";
+        }
+    </script>
+</body>
+</html>
